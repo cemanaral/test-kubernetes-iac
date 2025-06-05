@@ -1,3 +1,5 @@
 env
 .terraform*
 .dockerhub-token
+terraform.tfstate
+terraform.tfstate.backup

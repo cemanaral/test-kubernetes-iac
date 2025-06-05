@@ -19,7 +19,6 @@ resource "kubernetes_secret" "repository_pull_secret" {
       }
     })
   }
-
 }
 
 resource "kubernetes_namespace" "app_namespace" {
