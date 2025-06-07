@@ -2,3 +2,5 @@ env
 .terraform*
 .dockerhub-token
 *terraform.tfstate*
+test-kubernetes.private
+test-kubernetes.pub

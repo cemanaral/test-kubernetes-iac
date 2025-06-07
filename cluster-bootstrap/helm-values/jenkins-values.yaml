@@ -1,7 +1,29 @@
 controller:
+  additionalPlugins:
+  - job-dsl:1.93
+
   JCasC:
     enabled: true
     authorizationStrategy: unsecured
+    configScripts:
+     create-pipeline-job: |
+        jobs:
+          - script: >
+              pipelineJob('app-job') {
+                  description('this job was created by job-dsl plugin which was invoked by jcasc')
+                  definition { 
+                      cpsScm { 
+                        scm {
+                          git('git@github.com:cemanaral/test-kubernetes-app.git')
+                          
+                        }                    
+                      }
+                  }
+                  triggers {
+                      scm('* * * * *') 
+                  }
+              }
+
 
 agent:
   podTemplates: 

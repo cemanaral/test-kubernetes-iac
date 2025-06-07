@@ -25,4 +25,5 @@ resource "kubernetes_secret" "repository_pull_secret" {
       }
     })
   }
+  depends_on = [ kubernetes_namespace.app_namespace ]
 }
