@@ -1,18 +1,22 @@
 controller:
-  containerSecurityContext:
-    runAsGroup: 999
   JCasC:
     enabled: true
     authorizationStrategy: unsecured
 
-persistence:
-  mounts:
-  - mountPath: /var/run/docker.sock
-    name: docker-sock
-  volumes:
-  - name: docker-sock
-    hostPath:
-      path: /var/run/docker.sock
-      type: Socket
-
-
+agent:
+  podTemplates: 
+    docker-build: |
+      - name: docker-build
+        label: docker-build
+        serviceAccount: jenkins
+        runAsGroup: 999
+        runAsUser: 0
+        containers:
+          - name: docker-build
+            image: docker:28.2.2-dind
+            args: "-c 'sleep 9000'"
+            command: "/bin/sh"
+        volumes:
+        - hostPathVolume: 
+            hostPath: /var/run/docker.sock
+            mountPath: /var/run/docker.sock
