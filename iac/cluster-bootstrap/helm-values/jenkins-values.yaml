@@ -1,0 +1,18 @@
+controller:
+  containerSecurityContext:
+    runAsGroup: 999
+  JCasC:
+    enabled: true
+    authorizationStrategy: unsecured
+
+persistence:
+  mounts:
+  - mountPath: /var/run/docker.sock
+    name: docker-sock
+  volumes:
+  - name: docker-sock
+    hostPath:
+      path: /var/run/docker.sock
+      type: Socket
+
+
