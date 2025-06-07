@@ -1,3 +1,13 @@
+locals {
+  namespace = "app"
+}
+
+resource "kubernetes_namespace" "app_namespace" {
+  metadata {
+    name = local.namespace
+  }
+}
+
 resource "kubernetes_secret" "repository_pull_secret" {
   metadata {
     name = "dockerhub-image-pull-secret"
