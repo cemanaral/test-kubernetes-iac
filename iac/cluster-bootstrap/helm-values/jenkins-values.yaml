@@ -10,10 +10,10 @@ agent:
         label: docker-build
         serviceAccount: jenkins
         runAsGroup: 999
-        runAsUser: 0
+        runAsUser: 1000
         containers:
           - name: docker-build
-            image: docker:28.2.2-dind
+            image: docker:28.2.2-dind-rootless
             args: "-c 'sleep 9000'"
             command: "/bin/sh"
         volumes:
