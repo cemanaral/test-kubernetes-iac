@@ -5,7 +5,7 @@ locals {
 resource "null_resource" "minikube_cluster" {
   provisioner "local-exec" {
     when    = create
-    command = "minikube start --addons=ingress --kubernetes-version='${local.kubernetes_version}'"
+    command = "minikube start --kubernetes-version='${local.kubernetes_version}'"
   }
   provisioner "local-exec" {
     when    = destroy

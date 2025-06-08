@@ -42,6 +42,6 @@ resource "helm_release" "jenkins" {
   namespace        = "jenkins"
   chart            = "jenkins"
   version          = "5.8.56"
-  values           = [file("./helm-values/jenkins-values.yaml")]
+  values           = [file("./jenkins-values.yaml")]
   depends_on = [ kubernetes_secret.github_auth_ssh_key, kubernetes_secret.docker_login ]
 }
