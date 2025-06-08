@@ -1,11 +1,32 @@
 controller:
   additionalPlugins:
   - job-dsl:1.93
-
+  # ref: https://github.com/jenkinsci/configuration-as-code-plugin/blob/master/docs/features/secrets.adoc#kubernetes-secrets
+  additionalExistingSecrets:
+   - name: github-auth-ssh-key
+     keyName: ssh-private-key
+  
   JCasC:
     enabled: true
     authorizationStrategy: unsecured
     configScripts:
+     disable-ssh-host-verification-control: |
+        security:
+          gitHostKeyVerificationConfiguration:
+            sshHostKeyVerificationStrategy: "noHostKeyVerificationStrategy"
+     create-github-ssh-credential: |
+        credentials:
+          system:
+            domainCredentials:
+              - credentials:
+                  - basicSSHUserPrivateKey:
+                      scope: GLOBAL
+                      id: "github-ssh-private-key"
+                      username: "git"
+                      description: "github private ssh key"
+                      privateKeySource:
+                        directEntry:
+                          privateKey: ${github-auth-ssh-key-ssh-private-key}
      create-pipeline-job: |
         jobs:
           - script: >
@@ -14,8 +35,15 @@ controller:
                   definition { 
                       cpsScm { 
                         scm {
-                          git('git@github.com:cemanaral/test-kubernetes-app.git')
-                          
+                          git {
+                            remote {
+                                url('git@github.com:cemanaral/test-kubernetes-app.git')
+                                credentials('github-ssh-private-key')
+                            }
+                            extensions {
+                                cleanAfterCheckout()
+                            }
+                          }
                         }                    
                       }
                   }
