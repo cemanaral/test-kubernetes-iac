@@ -9,9 +9,10 @@ resource "kubernetes_namespace" "app_namespace" {
 }
 
 resource "kubernetes_secret" "repository_pull_secret" {
+  for_each = toset(["jenkins", "app"]) # creating for both jenkins and app namespaces
   metadata {
     name = "dockerhub-image-pull-secret"
-    namespace = local.namespace
+    namespace = each.key
   }
   type = "kubernetes.io/dockerconfigjson"
 
@@ -25,5 +26,5 @@ resource "kubernetes_secret" "repository_pull_secret" {
       }
     })
   }
-  depends_on = [ kubernetes_namespace.app_namespace ]
+  depends_on = [ kubernetes_namespace.app_namespace, kubernetes_namespace.jenkins ]
 }

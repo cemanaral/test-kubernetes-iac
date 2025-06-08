@@ -1,7 +1,7 @@
 controller:
   additionalPlugins:
   - job-dsl:1.93
-  # ref: https://github.com/jenkinsci/configuration-as-code-plugin/blob/master/docs/features/secrets.adoc#kubernetes-secrets
+  - docker-workflow:621.va_73f881d9232
   additionalExistingSecrets:
    - name: github-auth-ssh-key
      keyName: ssh-private-key
