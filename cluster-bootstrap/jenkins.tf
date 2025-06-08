@@ -21,6 +21,20 @@ resource "kubernetes_secret" "github_auth_ssh_key" {
   depends_on = [ kubernetes_namespace.jenkins ]
 }
 
+resource "kubernetes_secret" "docker_login" {
+  metadata {
+    name      = "docker-login"
+    namespace = local.jenkins_namespace
+  }
+  type = "generic"
+  data = {
+    username = "cemanaral425383"
+    password = file(".dockerhub-token")
+  }
+  depends_on = [ kubernetes_namespace.jenkins ]
+}
+
+
 resource "helm_release" "jenkins" {
   name             = "jenkins"
   repository       = "https://charts.jenkins.io"
@@ -29,5 +43,5 @@ resource "helm_release" "jenkins" {
   chart            = "jenkins"
   version          = "5.8.56"
   values           = [file("./helm-values/jenkins-values.yaml")]
-  depends_on = [ kubernetes_secret.github_auth_ssh_key ]
+  depends_on = [ kubernetes_secret.github_auth_ssh_key, kubernetes_secret.docker_login ]
 }

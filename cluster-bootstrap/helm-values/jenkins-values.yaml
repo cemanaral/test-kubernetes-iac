@@ -5,6 +5,10 @@ controller:
   additionalExistingSecrets:
    - name: github-auth-ssh-key
      keyName: ssh-private-key
+   - name: docker-login
+     keyName: username
+   - name: docker-login
+     keyName: password
   
   JCasC:
     enabled: true
@@ -14,6 +18,17 @@ controller:
         security:
           gitHostKeyVerificationConfiguration:
             sshHostKeyVerificationStrategy: "noHostKeyVerificationStrategy"
+     create-docker-login-credential: |
+        credentials:
+          system:
+            domainCredentials:
+              - credentials:
+                  - usernamePassword:
+                      id: "docker-login"
+                      password: ${docker-login-password}
+                      scope: GLOBAL
+                      username: ${docker-login-username}
+
      create-github-ssh-credential: |
         credentials:
           system:
@@ -27,6 +42,7 @@ controller:
                       privateKeySource:
                         directEntry:
                           privateKey: ${github-auth-ssh-key-ssh-private-key}
+
      create-pipeline-job: |
         jobs:
           - script: >
