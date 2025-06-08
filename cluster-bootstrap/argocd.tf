@@ -33,11 +33,11 @@ resource "kubernetes_manifest" "argocd_application" {
         repoURL        = "git@github.com:cemanaral/test-kubernetes-argocd.git"
         targetRevision = "HEAD"
         path           = "helm-chart/app"
-        # helm = {
-        #   valueFiles = [
-        #     "../../argocd-environments/nodejs-app/dev/values.yaml"
-        #   ]
-        # }
+        helm = {
+          valueFiles = [
+            "../../valuesOverrides/app-values.yaml"
+          ]
+        }
       }
       destination = {
         server    = "https://kubernetes.default.svc"
