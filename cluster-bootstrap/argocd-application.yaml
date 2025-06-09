@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: test-app
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: git@github.com:cemanaral/test-kubernetes-argocd.git
+    targetRevision: HEAD
+    path: helm-chart/app
+    helm:
+      valueFiles:
+        - ../../valuesOverrides/app-values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: app
+  syncPolicy:
+    automated:
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

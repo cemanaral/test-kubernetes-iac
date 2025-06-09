@@ -18,43 +18,19 @@ resource "helm_release" "argocd" {
   version          = "7.5.2"
   values           = [file("./argocd-values.yaml")]
 
-  depends_on       = [kubernetes_namespace.argocd]
+  depends_on = [kubernetes_namespace.argocd]
 }
 
-resource "kubernetes_manifest" "argocd_application" {
-  manifest = {
-    apiVersion = "argoproj.io/v1alpha1"
-    kind       = "Application"
-    metadata = {
-      name      = "test-app"
-      namespace = "argocd"
-    }
-    spec = {
-      project = "default"
-      source = {
-        repoURL        = "git@github.com:cemanaral/test-kubernetes-argocd.git"
-        targetRevision = "HEAD"
-        path           = "helm-chart/app"
-        helm = {
-          valueFiles = [
-            "../../valuesOverrides/app-values.yaml"
-          ]
-        }
-      }
-      destination = {
-        server    = "https://kubernetes.default.svc"
-        namespace = "app" # The target namespace where the application will be deployed
-      }
-      syncPolicy = {
-        automated = {
-          selfHeal = true
-        }
-        syncOptions = [
-          "CreateNamespace=true"
-        ]
-      }
-    }
+resource "null_resource" "argocd_application" {
+  provisioner "local-exec" {
+    when    = create
+    command = "kubectl apply -f argocd-application.yaml"
   }
+  provisioner "local-exec" {
+    when    = destroy
+    command = "kubectl delete -f argocd-application.yaml"
+  }
+  depends_on = [ helm_release.argocd ]
 }
 
 
@@ -71,5 +47,5 @@ resource "kubernetes_secret" "argocd-github-ssh-key" {
     url           = "git@github.com:cemanaral/test-kubernetes-argocd.git"
     sshPrivateKey = file("test-kubernetes.private")
   }
-  depends_on = [ kubernetes_namespace.argocd ]
+  depends_on = [kubernetes_namespace.argocd]
 }
