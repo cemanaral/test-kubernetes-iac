@@ -62,7 +62,7 @@ controller:
                       }
                   }
                   triggers {
-                      scm('H/3 * * * *')
+                      scm('H/4 * * * *')
                   }
               }
 
