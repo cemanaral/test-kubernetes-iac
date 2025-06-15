@@ -1,0 +1,41 @@
+imageTag: "8.18.2"
+
+envFrom:
+- secretRef:
+    name: elasticsearch-master-credentials
+
+secretMounts: 
+  - name: es-ssl-certs
+    secretName: elasticsearch-master-certs
+    path: /usr/share/logstash/certs
+
+
+logstashConfig:
+  logstash.yml: |
+    http.host: "0.0.0.0"
+
+logstashPipeline:
+  logstash.conf: |
+    input {
+      beats {
+        port => 5044
+      }
+    }
+    filter {
+    }
+    output {
+      elasticsearch {
+        hosts => ["https://elasticsearch-master:9200"]
+        index => "logstash-%{+YYYY.MM.dd}"
+        user => "${username}"
+        password => "${password}"
+        ssl_enabled => true
+        ssl_certificate_authorities => ["/usr/share/logstash/certs/ca.crt"]
+        ssl_verification_mode => "none"
+      }
+      
+      stdout {
+        codec => rubydebug
+      }
+    }
+
