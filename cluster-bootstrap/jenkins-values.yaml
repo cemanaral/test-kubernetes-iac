@@ -53,6 +53,7 @@ controller:
                         scm {
                           git {
                             remote {
+                                branch("add-trivy-scanning")
                                 url('git@github.com:cemanaral/test-kubernetes-app.git')
                                 credentials('github-ssh-private-key')
                             }
