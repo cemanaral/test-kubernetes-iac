@@ -2,6 +2,8 @@ controller:
   additionalPlugins:
   - job-dsl:1.93
   - docker-workflow:621.va_73f881d9232
+  - htmlpublisher:425
+  - configuration-as-code-groovy:1.1
   additionalExistingSecrets:
    - name: github-auth-ssh-key
      keyName: ssh-private-key
@@ -14,6 +16,9 @@ controller:
     enabled: true
     authorizationStrategy: unsecured
     configScripts:
+     disable-csp: |
+        groovy:
+          - script: System.setProperty("hudson.model.DirectoryBrowserSupport.CSP", "");
      disable-ssh-host-verification-control: |
         security:
           gitHostKeyVerificationConfiguration:
@@ -53,6 +58,7 @@ controller:
                         scm {
                           git {
                             remote {
+                                branch("main")
                                 url('git@github.com:cemanaral/test-kubernetes-app.git')
                                 credentials('github-ssh-private-key')
                             }
